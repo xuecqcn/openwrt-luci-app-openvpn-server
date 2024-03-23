@@ -1,26 +1,26 @@
 
 --require("luci.tools.webadmin")
 
-mp = Map("openvpn", "OpenVPN Server",translate("An easy config OpenVPN Server Web-UI"))
+mp = Map("openvpn", translate("OpenVPN Server"), translate("An easy config OpenVPN Server Web-UI"))
 
-mp:section(SimpleSection).template  = "openvpn/openvpn_status"
+mp:section(SimpleSection).template = "openvpn/openvpn_status"
 
 s = mp:section(TypedSection, "openvpn")
 s.anonymous = true
 s.addremove = false
 
-s:tab("basic",  translate("Base Setting"))
+s:tab("basic", translate("Base Setting"))
 
 o = s:taboption("basic", Flag, "enabled", translate("Enable"))
 
-proto = s:taboption("basic",Value,"proto", translate("Proto"))
+proto = s:taboption("basic", Value, "proto", translate("Proto"))
 proto:value("tcp4", translate("TCP Server IPv4"))
 proto:value("udp4", translate("UDP Server IPv4"))
 proto:value("tcp6", translate("TCP Server IPv6"))
 proto:value("udp6", translate("UDP Server IPv6"))
 
 port = s:taboption("basic", Value, "port", translate("Port"))
-port.datatype = "range(1,65535)"
+port.datatype = "range(1, 65535)"
 
 ddns = s:taboption("basic", Value, "ddns", translate("WAN DDNS or IP"))
 ddns.datatype = "string"
@@ -36,15 +36,14 @@ list.title = translate("Client Settings")
 list.datatype = "string"
 list.description = translate("Set route 192.168.0.0 255.255.255.0 and dhcp-option DNS 192.168.0.1 base on your router")
 
-
 local o
 o = s:taboption("basic", Button, "certificate", translate("OpenVPN Client config file"))
 o.inputtitle = translate("Download .ovpn file")
 o.description = translate("If you are using IOS client, please download this .ovpn file and send it via QQ or Email to your IOS device")
 o.inputstyle = "reload"
 o.write = function()
-  luci.sys.call("sh /etc/genovpn.sh 2>&1 >/dev/null")
-  Download()
+	luci.sys.call("sh /etc/openvpn/genovpn.sh 2>&1 >/dev/null")
+	Download()
 end
 
 local o
@@ -52,12 +51,12 @@ o = s:taboption("basic", Button, "renew_certificate", translate("Renew OpenVPN c
 o.inputtitle = translate("Renew")
 o.inputstyle = "reload"
 o.write = function()
-  luci.sys.call("sh /etc/openvpncert.sh 2>&1 >/dev/null")
+	luci.sys.call("sh /etc/openvpn/renewcert.sh 2>&1 >/dev/null &")
 end
 
-s:tab("code",  translate("Special Code"))
+s:tab("code", translate("Special Code"))
 
-local conf = "/etc/ovpnadd.conf"
+local conf = "/etc/openvpn-addon.conf"
 local NXFS = require "nixio.fs"
 o = s:taboption("code", TextValue, "conf")
 o.description = translate("(!)Special Code you know that add in to client .ovpn file")
@@ -70,22 +69,19 @@ o.write = function(self, section, value)
 	NXFS.writefile(conf, value:gsub("\r\n", "\n"))
 end
 
-
 local pid = luci.util.exec("/usr/bin/pgrep openvpn")
 
 function openvpn_process_status()
-  local status = "OpenVPN is not running now "
+	local status = "OpenVPN is not running now "
 
-  if pid ~= "" then
-      status = "OpenVPN is running with the PID " .. pid .. ""
-  end
+	if pid ~= "" then
+		status = "OpenVPN is running with the PID " .. pid .. ""
+	end
 
-  local status = { status=status }
-  local table = { pid=status }
-  return table
+	local status = { status=status }
+	local table = { pid=status }
+	return table
 end
-
-
 
 function Download()
 	local t,e
@@ -105,9 +101,8 @@ function Download()
 end
 
 function mp.on_after_commit(self)
-  os.execute("uci set firewall.openvpn.dest_port=$(uci get openvpn.myvpn.port) && uci commit firewall &&  /etc/init.d/firewall restart")
-  os.execute("/etc/init.d/openvpn restart")
+	os.execute("uci set firewall.openvpn.dest_port=$(uci get openvpn.myvpn.port) && uci commit firewall && /etc/init.d/firewall restart")
+	os.execute("/etc/init.d/openvpn restart")
 end
-
 
 return mp

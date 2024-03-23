@@ -20,12 +20,13 @@ $EASYRSA_CLI build-server-full server nopass
 $EASYRSA_CLI build-client-full client1 nopass
 
 # Copy files
-cp /etc/easy-rsa/pki/ca.crt /etc/openvpn/
-cp /etc/easy-rsa/pki/dh.pem /etc/openvpn/
-cp /etc/easy-rsa/pki/issued/server.crt /etc/openvpn/
-cp /etc/easy-rsa/pki/private/server.key /etc/openvpn/
-cp /etc/easy-rsa/pki/issued/client1.crt /etc/openvpn/
-cp /etc/easy-rsa/pki/private/client1.key /etc/openvpn/
+mkdir -p /etc/openvpn/pki
+cp /etc/easy-rsa/pki/ca.crt /etc/openvpn/pki/
+cp /etc/easy-rsa/pki/dh.pem /etc/openvpn/pki/
+cp /etc/easy-rsa/pki/issued/server.crt /etc/openvpn/pki/
+cp /etc/easy-rsa/pki/private/server.key /etc/openvpn/pki/
+cp /etc/easy-rsa/pki/issued/client1.crt /etc/openvpn/pki/
+cp /etc/easy-rsa/pki/private/client1.key /etc/openvpn/pki/
 
 # Restart openvpn
 /etc/init.d/openvpn restart
