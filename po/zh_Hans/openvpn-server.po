@@ -8,6 +8,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: applications/luci-app-openvpn-server/luasrc/controller/openvpn-server.lua:13
+#: applications/luci-app-openvpn-server/luasrc/model/cbi/openvpn-server/openvpn-server.lua:4
+#: applications/luci-app-openvpn-server/luasrc/view/openvpn/openvpn_status.htm:7
+#: applications/luci-app-openvpn-server/luasrc/view/openvpn/openvpn_status.htm:10
+msgid "OpenVPN Server"
+msgstr "OpenVPN 服务器"
+
 #: applications/luci-app-openvpn-server/luasrc/model/cbi/openvpn-server/openvpn-server.lua:4
 msgid "An easy config OpenVPN Server Web-UI"
 msgstr "易于使用的 OpenVPN 服务器 Web-UI"
